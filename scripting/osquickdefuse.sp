@@ -85,14 +85,16 @@ public Action Event_BombBeginDefuse ( Handle event, const char[] name, bool dont
 }
  
 /* PANELS */
-public Panel_Plant ( Handle menu, MenuAction action, int player, int choice ) {
-    if ( choice > 0 && choice < 5 ) {
+public Panel_Plant ( Handle menu, MenuAction action, int player, int item ) {
+    int choice = ( item - 1 );
+    if ( choice >= 0 && choice <= 3 ) {
         wire = choice;
         PrintToChat ( player, " \x08You have chosen the %s%s \x08wire", code[wire], color[wire] );
     }
 }
-public Panel_Defuse ( Handle menu, MenuAction action, int player, int choice ) {
-    if ( choice > 0 && choice < 5 ) {
+public Panel_Defuse ( Handle menu, MenuAction action, int player, int item ) {
+    int choice = ( item - 1 );
+    if ( choice >= 0 && choice <= 3 ) {
         cut = choice;
         if ( cut == wire ) {
             PrintToChat ( player, " \x08You have cut the %s%s \x08wire", code[cut], color[cut] );
