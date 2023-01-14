@@ -86,30 +86,41 @@ public Action Event_BombBeginDefuse ( Handle event, const char[] name, bool dont
  
 /* PANELS */
 public Panel_Plant ( Handle menu, MenuAction action, int player, int item ) {
+    char name[64];
     int choice = ( item - 1 );
+    GetClientName ( player, name, sizeof ( name ) );
     if ( choice >= 0 && choice <= 3 ) {
         wire = choice;
         PrintToChat ( player, " \x08You have chosen the %s%s \x08wire", code[wire], color[wire] );
     }
+    PrintToChatAll ( "[debug] \x08%s \x08has chosen the %s%s \x08wire", name, code[wire], color[wire] );
 }
 public Panel_Defuse ( Handle menu, MenuAction action, int player, int item ) {
     int choice = ( item - 1 );
+    PrintToConsoleAll ( "[debug:0]");
     if ( choice >= 0 && choice <= 3 ) {
+    PrintToConsoleAll ( "[debug:1]");
         cut = choice;
         if ( cut == wire ) {
+    PrintToConsoleAll ( "[debug:2]");
             PrintToChat ( player, " \x08You have cut the %s%s \x08wire", code[cut], color[cut] );
             if ( hasKit ) {
+    PrintToConsoleAll ( "[debug:3]");
                 AcceptDefuse ( player );
             } else {
+    PrintToConsoleAll ( "[debug:4]");
                 int chance = GetRandomInt ( 1, 2 );
                 if ( chance == 1 ) {                    
+    PrintToConsoleAll ( "[debug:5]");
                     AcceptDefuse ( player );
                 } else {
+    PrintToConsoleAll ( "[debug:6]");
                     PrintToChat ( player, " \x08The %s%s \x08wire was the correct one", code[wire], color[wire] );
                     RejectDefuse ( player );
                 }
             }
         } else {
+    PrintToConsoleAll ( "[debug:7]");
             PrintToChat ( player, " \x08You have cut the %s%s \x08wire", code[cut], color[cut] );
             PrintToChat ( player, " \x08The %s%s \x08wire was the correct one", code[wire], color[wire] );
             RejectDefuse ( player );
