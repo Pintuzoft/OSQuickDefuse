@@ -97,30 +97,30 @@ public Panel_Plant ( Handle menu, MenuAction action, int player, int item ) {
 }
 public Panel_Defuse ( Handle menu, MenuAction action, int player, int item ) {
     int choice = ( item - 1 );
-    PrintToConsoleAll ( "[debug:0]");
+    PrintToConsoleAll ( "[Panel_Defuse:0]");
     if ( choice >= 0 && choice <= 3 ) {
-    PrintToConsoleAll ( "[debug:1]");
+    PrintToConsoleAll ( "[Panel_Defuse:1]");
         cut = choice;
         if ( cut == wire ) {
-    PrintToConsoleAll ( "[debug:2]");
+    PrintToConsoleAll ( "[Panel_Defuse:2]");
             PrintToChat ( player, " \x08You have cut the %s%s \x08wire", code[cut], color[cut] );
             if ( hasKit ) {
-    PrintToConsoleAll ( "[debug:3]");
+    PrintToConsoleAll ( "[Panel_Defuse:3]");
                 AcceptDefuse ( player );
             } else {
-    PrintToConsoleAll ( "[debug:4]");
+    PrintToConsoleAll ( "[Panel_Defuse:4]");
                 int chance = GetRandomInt ( 1, 2 );
                 if ( chance == 1 ) {                    
-    PrintToConsoleAll ( "[debug:5]");
+    PrintToConsoleAll ( "[Panel_Defuse:5]");
                     AcceptDefuse ( player );
                 } else {
-    PrintToConsoleAll ( "[debug:6]");
+    PrintToConsoleAll ( "[Panel_Defuse:6]");
                     PrintToChat ( player, " \x08The %s%s \x08wire was the correct one", code[wire], color[wire] );
                     RejectDefuse ( player );
                 }
             }
         } else {
-    PrintToConsoleAll ( "[debug:7]");
+    PrintToConsoleAll ( "[Panel_Defuse:7]");
             PrintToChat ( player, " \x08You have cut the %s%s \x08wire", code[cut], color[cut] );
             PrintToChat ( player, " \x08The %s%s \x08wire was the correct one", code[wire], color[wire] );
             RejectDefuse ( player );
@@ -146,17 +146,23 @@ public void AcceptDefuse ( int player ) {
 
 public void RejectDefuse ( int player ) {
     char name[64];
+    PrintToConsoleAll ( "[ - RejectDefuse:0]");
+
     int bomb = FindEntityByClassname ( -1, "planted_c4" );
     if ( bomb ) {
+    PrintToConsoleAll ( "[ - RejectDefuse:1]");
         GetClientName ( player, name, sizeof ( name ) );
         SetEntPropFloat ( bomb, Prop_Send, "m_flC4Blow", 1.0 );
         if ( hasKit ) {
+    PrintToConsoleAll ( "[ - RejectDefuse:2]");
             PrintToChat ( player, " \x08You have accidentally triggered the bomb while trying to defused it (1/4 chance with kit)" );
             PrintToChatAll ( " \x08%s \x08has failed to cut the correct wire with kit (1/4)", name );
         } else {
+    PrintToConsoleAll ( "[ - RejectDefuse:3]");
             PrintToChat ( player, " \x08You have accidentally triggered the bomb while trying to defused it without kit (1/8 chance)" );
             PrintToChatAll ( " \x08%s \x08has failed to cut the correct wire without kit (1/8)", name );
         }
     }
+    PrintToConsoleAll ( " - [RejectDefuse:4]");
 }
  
