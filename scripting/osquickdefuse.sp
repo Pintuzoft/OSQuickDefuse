@@ -52,7 +52,7 @@ public Action Event_BombPlanted ( Handle event, const char[] name, bool dontBroa
     int player = GetClientOfUserId ( GetEventInt ( event, "userid" ) );
     if ( wire == 0 ) {
         wire = GetRandomInt ( 1, 4 );
-        PrintToChat ( player, " \x08Wire has been randomly set to %s%s \x08", code[wire], color[wire] );
+        PrintToChatAll ( " \x08Wire has been randomly set to %s%s \x08", code[wire], color[wire] );
     }
     return Plugin_Continue;
 }
@@ -97,30 +97,22 @@ public Panel_Plant ( Handle menu, MenuAction action, int player, int item ) {
 }
 public Panel_Defuse ( Handle menu, MenuAction action, int player, int item ) {
     int choice = ( item - 1 );
-    PrintToConsoleAll ( "[Panel_Defuse:0]");
     if ( choice >= 0 && choice <= 3 ) {
-    PrintToConsoleAll ( "[Panel_Defuse:1]");
         cut = choice;
         if ( cut == wire ) {
-    PrintToConsoleAll ( "[Panel_Defuse:2]");
             PrintToChat ( player, " \x08You have cut the %s%s \x08wire", code[cut], color[cut] );
             if ( hasKit ) {
-    PrintToConsoleAll ( "[Panel_Defuse:3]");
                 AcceptDefuse ( player );
             } else {
-    PrintToConsoleAll ( "[Panel_Defuse:4]");
                 int chance = GetRandomInt ( 1, 2 );
                 if ( chance == 1 ) {                    
-    PrintToConsoleAll ( "[Panel_Defuse:5]");
                     AcceptDefuse ( player );
                 } else {
-    PrintToConsoleAll ( "[Panel_Defuse:6]");
                     PrintToChat ( player, " \x08The %s%s \x08wire was the correct one", code[wire], color[wire] );
                     RejectDefuse ( player );
                 }
             }
         } else {
-    PrintToConsoleAll ( "[Panel_Defuse:7]");
             PrintToChat ( player, " \x08You have cut the %s%s \x08wire", code[cut], color[cut] );
             PrintToChat ( player, " \x08The %s%s \x08wire was the correct one", code[wire], color[wire] );
             RejectDefuse ( player );
