@@ -133,7 +133,7 @@ public void AcceptDefuse ( int player ) {
     int bomb = FindEntityByClassname ( -1, "planted_c4" );
     if ( bomb ) {
         GetClientName ( player, name, sizeof ( name ) );
-        SetEntPropFloat ( bomb, Prop_Send, "m_flDefuseLength", 1.0 );
+        SetEntPropFloat ( bomb, Prop_Send, "m_flDefuseCountDown", 1.0 );
         if ( hasKit ) {        
             PrintToChat ( player, " \x08You have successfully defused the bomb (1/4 chance with kit)" );
             PrintToChatAll ( " \x08%s \x08has correctly cut the %s%s \x08defuse wire (1/4 chance)", name, code[wire], color[wire] );
@@ -141,28 +141,26 @@ public void AcceptDefuse ( int player ) {
             PrintToChat ( player, " \x08You have successfully defused the bomb (1/8 chance without kit)" );
             PrintToChatAll ( " \x08%s \x08has correctly cut the %s%s \x08defuse wire (1/8 chance)", name, code[wire], color[wire] );
         }
+    } else {
+        PrintToChat ( player, " \x08The bomb wasnt found!" );
     }
 }
 
 public void RejectDefuse ( int player ) {
     char name[64];
-    PrintToConsoleAll ( "[ - RejectDefuse:0]");
-
     int bomb = FindEntityByClassname ( -1, "planted_c4" );
     if ( bomb ) {
-    PrintToConsoleAll ( "[ - RejectDefuse:1]");
         GetClientName ( player, name, sizeof ( name ) );
         SetEntPropFloat ( bomb, Prop_Send, "m_flC4Blow", 1.0 );
         if ( hasKit ) {
-    PrintToConsoleAll ( "[ - RejectDefuse:2]");
             PrintToChat ( player, " \x08You have accidentally triggered the bomb while trying to defused it (1/4 chance with kit)" );
             PrintToChatAll ( " \x08%s \x08has failed to cut the correct wire with kit (1/4)", name );
         } else {
-    PrintToConsoleAll ( "[ - RejectDefuse:3]");
             PrintToChat ( player, " \x08You have accidentally triggered the bomb while trying to defused it without kit (1/8 chance)" );
             PrintToChatAll ( " \x08%s \x08has failed to cut the correct wire without kit (1/8)", name );
         }
+    } else {
+        PrintToChat ( player, " \x08The bomb wasnt found!" );
     }
-    PrintToConsoleAll ( " - [RejectDefuse:4]");
 }
  
