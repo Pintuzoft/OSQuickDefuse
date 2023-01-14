@@ -49,7 +49,6 @@ public Action Event_BombBeginPlant ( Handle event, const char[] name, bool dontB
     return Plugin_Continue;
 }
 public Action Event_BombPlanted ( Handle event, const char[] name, bool dontBroadcast ) {
-    int player = GetClientOfUserId ( GetEventInt ( event, "userid" ) );
     if ( wire == 0 ) {
         wire = GetRandomInt ( 1, 4 );
         PrintToChatAll ( " \x08Wire has been randomly set to %s%s \x08", code[wire], color[wire] );
