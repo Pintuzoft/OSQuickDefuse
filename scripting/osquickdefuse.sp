@@ -95,9 +95,8 @@ public Panel_Defuse ( Handle menu, MenuAction action, int player, int cut ) {
             PrintToConsoleAll ( "RejectDefuse(%d)", player );
             //RejectDefuse ( player );
         }
-    } else { 
-        LoadDefusePanel ( player );
-    }
+    }  
+    LoadDefusePanel ( player );
 }
 
 public void AcceptDefuse ( int player ) {
