@@ -29,7 +29,7 @@ public void OnPluginStart() {
 }
 
 public void OnRoundStart() {
-    wire = 0;
+    wire = -1;
     hasKit = false;
     ResetPanel ( );
 }
@@ -49,15 +49,17 @@ public Action Event_BombDefused ( Handle event, const char[] name, bool dontBroa
 }
 public Action Event_BombBeginPlant ( Handle event, const char[] name, bool dontBroadcast ) {
     int player = GetClientOfUserId ( GetEventInt ( event, "userid" ) );
-    wire = 0;
+    wire = -1;
+    hasKit = false;
+    ResetPanel ( );
     if ( playerIsReal ( player ) ) {
         LoadPlantPanel ( player );
     } 
     return Plugin_Continue;
 }
 public Action Event_BombPlanted ( Handle event, const char[] name, bool dontBroadcast ) {
-    if ( wire <= 0 || wire >= 5 ) {
-        wire = GetRandomInt ( 1, 4 );
+    if ( wire < 0 || wire >3 ) {
+        wire = GetRandomInt ( 0, 3 );
         PrintToConsoleAll ( " \x08Wire has been randomly selected", code[wire], color[wire] );
     }
     return Plugin_Continue;
@@ -85,10 +87,8 @@ public Action Event_BombBeginDefuse ( Handle event, const char[] name, bool dont
 
 public Panel_Defuse ( Handle menu, MenuAction action, int player, int choice ) {
     int cut = (choice - 1);
-    PrintToChat ( player, " \x08Your choice: ", choice );
-    return;
-    if ( wire <= 0 || wire >= 5 ) {
-        wire = GetRandomInt ( 1, 4 );
+    if ( wire < 0 || wire > 3 ) {
+        wire = GetRandomInt ( 0, 3 );
         PrintToConsoleAll ( " \x08Wire has been randomly selected (%s%s \x08)", code[wire], color[wire] );
     }
     if ( cut >= 0 && cut <= 3 ) {
