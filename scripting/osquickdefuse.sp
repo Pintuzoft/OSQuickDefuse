@@ -6,8 +6,8 @@
 int wire;
 int cut;
 bool hasKit = false;
-int defuser;
-bool detectKeys = false;
+Handle panel; 
+
 char code[4][8] = { "\x0C", "\x10", "\x02", "\x04" };
 char color[4][8] = { "Blue", "Yellow", "Red", "Green" };
 
@@ -24,9 +24,24 @@ public void OnPluginStart() {
     HookEvent ( "bomb_beginplant", Event_BombBeginPlant, EventHookMode_Post );
     HookEvent ( "bomb_planted", Event_BombPlanted, EventHookMode_Post );
     HookEvent ( "bomb_begindefuse", Event_BombBeginDefuse, EventHookMode_Post );
+    HookEvent ( "bomb_defused", Event_BombDefused, EventHookMode_Post );
+    HookEvent ( "bomb_abortdefuse", Event_BombAbortDefuse, EventHookMode_Post );
+    HookEvent ( "bomb_exploded", Event_BombExploded, EventHookMode_Post );
 }
 
 /* EVENTS */
+public Action Event_BombExploded ( Handle event, const char[] name, bool dontBroadcast ) {
+    ResetVariables ( );
+    return Plugin_Continue;
+}
+public Action Event_BombAbortDefuse ( Handle event, const char[] name, bool dontBroadcast ) {
+    ResetVariables ( );
+    return Plugin_Continue;
+}
+public Action Event_BombDefused ( Handle event, const char[] name, bool dontBroadcast ) {
+    ResetVariables ( );
+    return Plugin_Continue;
+}
 public Action Event_BombBeginPlant ( Handle event, const char[] name, bool dontBroadcast ) {
     int player = GetClientOfUserId ( GetEventInt ( event, "userid" ) );
     wire = 0;
@@ -52,8 +67,6 @@ public Action Event_BombBeginDefuse ( Handle event, const char[] name, bool dont
     hasKit = GetEventBool ( event, "haskit" );
     if ( playerIsReal ( player ) ) { 
         LoadDefusePanel ( player );
-    } else {
-        /* NOT REAL PLAYER */
     }
     return Plugin_Continue;
 }
@@ -95,7 +108,7 @@ public Panel_Defuse ( Handle menu, MenuAction action, int player, int cut ) {
             PrintToConsoleAll ( "RejectDefuse(%d)", player );
             //RejectDefuse ( player );
         }
-    }  
+    }
     LoadDefusePanel ( player );
 }
 
@@ -139,7 +152,7 @@ public void RejectDefuse ( int player ) {
 
 public void LoadDefusePanel ( int player ) {
     PrintToConsoleAll ( "LoadDefusePanel(%d)", player );
-    Handle panel = CreatePanel ( );
+    panel = CreatePanel ( );
     SetPanelTitle ( panel, "Choose wire:" );
     DrawPanelText ( panel, " " );
     DrawPanelText ( panel, "Cut a wire for an instant defuse" );
@@ -159,7 +172,7 @@ public void LoadDefusePanel ( int player ) {
 } 
 
 public void LoadPlantPanel ( int player ) {
-    Handle panel = CreatePanel ( );
+    panel = CreatePanel ( );
     SetPanelTitle ( panel, "Choose wire:" );
     DrawPanelText ( panel, " " );
     DrawPanelText ( panel, "Set a wire for instant defuse:" );
@@ -177,6 +190,9 @@ public void LoadPlantPanel ( int player ) {
 public void ResetVariables ( ) {
     wire = 0;
     cut = 0;
+    if ( panel ) {
+        delete panel;
+    }
     hasKit = false;
 }
 
