@@ -4,7 +4,6 @@
 #include <cstrike>
 
 int wire;
-int cut;
 bool hasKit = false;
 Handle panel; 
 
@@ -31,27 +30,23 @@ public void OnPluginStart() {
 
 /* EVENTS */
 public Action Event_BombExploded ( Handle event, const char[] name, bool dontBroadcast ) {
-    ResetVariables ( );
+    ResetPanel ( );
     return Plugin_Continue;
 }
 public Action Event_BombAbortDefuse ( Handle event, const char[] name, bool dontBroadcast ) {
-    ResetVariables ( );
+    ResetPanel ( );
     return Plugin_Continue;
 }
 public Action Event_BombDefused ( Handle event, const char[] name, bool dontBroadcast ) {
-    ResetVariables ( );
+    ResetPanel ( );
     return Plugin_Continue;
 }
 public Action Event_BombBeginPlant ( Handle event, const char[] name, bool dontBroadcast ) {
     int player = GetClientOfUserId ( GetEventInt ( event, "userid" ) );
     wire = 0;
-    cut = 0;
     if ( playerIsReal ( player ) ) {
         LoadPlantPanel ( player );
-
-    } else {
-        PrintToConsoleAll ( "[debug] \x08Player is not real" );
-    }
+    } 
     return Plugin_Continue;
 }
 public Action Event_BombPlanted ( Handle event, const char[] name, bool dontBroadcast ) {
@@ -72,9 +67,9 @@ public Action Event_BombBeginDefuse ( Handle event, const char[] name, bool dont
 }
  
 /* PANELS */
- public Panel_Plant ( Handle menu, MenuAction action, int player, int wire ) {
+ public Panel_Plant ( Handle menu, MenuAction action, int player, int choice ) {
     char name[64];
-    --wire;
+    wire = (choice - 1);
     GetClientName ( player, name, sizeof ( name ) );
     if ( wire >= 0 && wire <= 3 ) {
         PrintToChat ( player, " \x08You have chosen the %s%s \x08wire", code[wire], color[wire] );
@@ -82,8 +77,8 @@ public Action Event_BombBeginDefuse ( Handle event, const char[] name, bool dont
     PrintToChatAll ( "[debug] \x08%s \x08has chosen the %s%s \x08wire", name, code[wire], color[wire] );
 }
 
-public Panel_Defuse ( Handle menu, MenuAction action, int player, int cut ) {
-    --cut;
+public Panel_Defuse ( Handle menu, MenuAction action, int player, int choice ) {
+    int cut = (choice - 1);
     if ( wire <= 0 || wire >= 5 ) {
         wire = GetRandomInt ( 1, 4 );
         PrintToConsoleAll ( " \x08Wire has been randomly selected (%s%s \x08)", code[wire], color[wire] );
@@ -99,14 +94,13 @@ public Panel_Defuse ( Handle menu, MenuAction action, int player, int cut ) {
                     AcceptDefuse ( player );
                 } else {
                     PrintToChat ( player, " \x08The %s%s \x08wire was the correct one", code[wire], color[wire] );
-                    //RejectDefuse ( player );
+                    RejectDefuse ( player );
                 }
             }
         } else {
             PrintToChat ( player, " \x08You have cut the %s%s \x08wire", code[cut], color[cut] );
             PrintToChat ( player, " \x08The %s%s \x08wire was the correct one", code[wire], color[wire] );
-            PrintToConsoleAll ( "RejectDefuse(%d)", player );
-            //RejectDefuse ( player );
+            RejectDefuse ( player );
         }
     }
     LoadDefusePanel ( player );
@@ -125,10 +119,8 @@ public void AcceptDefuse ( int player ) {
             PrintToChat ( player, " \x08You have successfully defused the bomb (1/8 chance without kit)" );
             PrintToChatAll ( " \x08%s \x08has correctly cut the %s%s \x08defuse wire (1/8 chance)", name, code[wire], color[wire] );
         }
-    } else {
-        PrintToChat ( player, " \x08The bomb wasnt found!" );
     }
-    ResetVariables ( );
+    ResetPanel ( );
 }
 
 public void RejectDefuse ( int player ) {
@@ -147,11 +139,10 @@ public void RejectDefuse ( int player ) {
     } else {
         PrintToChat ( player, " \x08The bomb wasnt found!" );
     }
-    ResetVariables ( );
+    ResetPanel ( );
 }
 
 public void LoadDefusePanel ( int player ) {
-    PrintToConsoleAll ( "LoadDefusePanel(%d)", player );
     panel = CreatePanel ( );
     SetPanelTitle ( panel, "Choose wire:" );
     DrawPanelText ( panel, " " );
@@ -187,13 +178,10 @@ public void LoadPlantPanel ( int player ) {
     CloseHandle ( panel );
 } 
 
-public void ResetVariables ( ) {
-    wire = 0;
-    cut = 0;
+public void ResetPanel ( ) {
     if ( panel ) {
         delete panel;
     }
-    hasKit = false;
 }
 
 public bool playerIsReal ( int player ) {
