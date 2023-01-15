@@ -94,6 +94,10 @@ public Panel_Plant ( Handle menu, MenuAction action, int player, int wire ) {
 }
 public Panel_Defuse ( Handle menu, MenuAction action, int player, int cut ) {
     --cut;
+    if ( wire == 0 ) {
+        wire = GetRandomInt ( 1, 4 );
+        PrintToConsoleAll ( " \x08Wire has been randomly selected (%s%s \x08)", code[wire], color[wire] );
+    }
     if ( cut >= 0 && cut <= 3 ) {
         if ( cut == wire ) {
             PrintToChat ( player, " \x08You have cut the %s%s \x08wire", code[cut], color[cut] );
