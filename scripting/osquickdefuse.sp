@@ -51,7 +51,7 @@ public Action Event_BombBeginPlant ( Handle event, const char[] name, bool dontB
 public Action Event_BombPlanted ( Handle event, const char[] name, bool dontBroadcast ) {
     if ( wire == 0 ) {
         wire = GetRandomInt ( 1, 4 );
-        PrintToChatAll ( " \x08Wire has been randomly set to %s%s \x08", code[wire], color[wire] );
+        PrintToChatAll ( " \x08Wire has been randomly selected (%s%s \x08)", code[wire], color[wire] );
     }
     return Plugin_Continue;
 }
