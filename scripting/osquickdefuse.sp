@@ -28,6 +28,12 @@ public void OnPluginStart() {
     HookEvent ( "bomb_exploded", Event_BombExploded, EventHookMode_Post );
 }
 
+public void OnRoundStart() {
+    wire = 0;
+    hasKit = false;
+    ResetPanel ( );
+}
+
 /* EVENTS */
 public Action Event_BombExploded ( Handle event, const char[] name, bool dontBroadcast ) {
     ResetPanel ( );
@@ -79,6 +85,8 @@ public Action Event_BombBeginDefuse ( Handle event, const char[] name, bool dont
 
 public Panel_Defuse ( Handle menu, MenuAction action, int player, int choice ) {
     int cut = (choice - 1);
+    PrintToChat ( player, " \x08Your choice: ", choice );
+    return;
     if ( wire <= 0 || wire >= 5 ) {
         wire = GetRandomInt ( 1, 4 );
         PrintToConsoleAll ( " \x08Wire has been randomly selected (%s%s \x08)", code[wire], color[wire] );
@@ -109,7 +117,6 @@ public Panel_Defuse ( Handle menu, MenuAction action, int player, int choice ) {
 public void AcceptDefuse ( int player ) {
     char name[64];
     int bomb = FindEntityByClassname ( -1, "planted_c4" );
-    printVariables ( player );
     if ( bomb ) {
         GetClientName ( player, name, sizeof ( name ) );
         SetEntPropFloat ( bomb, Prop_Send, "m_flDefuseCountDown", 1.0 );
@@ -127,7 +134,6 @@ public void AcceptDefuse ( int player ) {
 public void RejectDefuse ( int player ) {
     char name[64];
     int bomb = FindEntityByClassname ( -1, "planted_c4" );
-    printVariables ( player );
     if ( bomb ) {
         GetClientName ( player, name, sizeof ( name ) );
         SetEntPropFloat ( bomb, Prop_Send, "m_flC4Blow", 1.0 );
@@ -138,7 +144,6 @@ public void RejectDefuse ( int player ) {
             PrintToChat ( player, " \x08You have accidentally triggered the bomb while trying to defused it without kit (1/8 chance)" );
             PrintToChatAll ( " \x08%s \x08has failed to cut the correct wire without kit (1/8)", name );
         }
-        printVariables ( player );
     }
     ResetPanel ( );
 }
@@ -197,9 +202,4 @@ public bool playerIsReal ( int player ) {
         return true;
     }
     return false;
-}
-
-public void printVariables ( int player ) {
-    PrintToChat ( player, " \x08[debug]: hasKit: %d", hasKit );
-    PrintToChat ( player, " \x08[debug]: wire: %d", wire );
 }
