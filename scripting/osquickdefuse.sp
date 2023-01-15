@@ -5,7 +5,7 @@
 
 int wire;
 bool hasKit = false;
-Handle panel = null; 
+Handle panel; 
 
 char code[4][8] = { "\x0C", "\x10", "\x02", "\x04" };
 char color[4][8] = { "Blue", "Yellow", "Red", "Green" };
@@ -193,10 +193,9 @@ public void LoadPlantPanel ( int player ) {
 } 
 
 public void ResetPanel ( ) {
-    if ( panel != null ) {
+    if ( panel != INVALID_HANDLE ) {
         delete panel;
     }
-    panel = null;
 }
 
 public bool playerIsReal ( int player ) {
