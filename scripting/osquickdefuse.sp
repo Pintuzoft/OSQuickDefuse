@@ -138,6 +138,7 @@ public void RejectDefuse ( int player ) {
 }
 
 public void LoadDefusePanel ( int player ) {
+    PrintToConsoleAll ( "LoadDefusePanel(%d)", player );
     Handle panel = CreatePanel ( );
     SetPanelTitle ( panel, "Choose wire:" );
     DrawPanelText ( panel, " " );
