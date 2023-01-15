@@ -149,7 +149,6 @@ public void RejectDefuse ( int player ) {
 }
 
 public void LoadDefusePanel ( int player ) {
-    ResetPanel ( );
     panel = CreatePanel ( );
     SetPanelTitle ( panel, "Choose wire:" );
     DrawPanelText ( panel, " " );
@@ -170,7 +169,6 @@ public void LoadDefusePanel ( int player ) {
 } 
 
 public void LoadPlantPanel ( int player ) {
-    ResetPanel ( );
     panel = CreatePanel ( );
     SetPanelTitle ( panel, "Choose wire:" );
     DrawPanelText ( panel, " " );
