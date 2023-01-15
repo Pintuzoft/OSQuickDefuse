@@ -3,8 +3,8 @@
 #include <sdktools>
 #include <cstrike>
 
-int wire = 0;
-int cut = 0;
+int wire;
+int cut;
 bool hasKit = false;
 char code[4][8] = { "\x0C", "\x10", "\x02", "\x04" };
 char color[4][8] = { "Blue", "Yellow", "Red", "Green" };
@@ -22,7 +22,6 @@ public void OnPluginStart() {
     HookEvent ( "bomb_beginplant", Event_BombBeginPlant, EventHookMode_Post );
     HookEvent ( "bomb_planted", Event_BombPlanted, EventHookMode_Post );
     HookEvent ( "bomb_begindefuse", Event_BombBeginDefuse, EventHookMode_Post );
-    
 }
 
 
@@ -30,7 +29,7 @@ public void OnPluginStart() {
 public Action Event_BombBeginPlant ( Handle event, const char[] name, bool dontBroadcast ) {
     int player = GetClientOfUserId ( GetEventInt ( event, "userid" ) );
     wire = 0;
-
+    cut = 0;
     Handle panel = CreatePanel ( );
     
     SetPanelTitle ( panel, "Choose wire:" );
@@ -51,7 +50,7 @@ public Action Event_BombBeginPlant ( Handle event, const char[] name, bool dontB
 public Action Event_BombPlanted ( Handle event, const char[] name, bool dontBroadcast ) {
     if ( wire == 0 ) {
         wire = GetRandomInt ( 1, 4 );
-        PrintToChatAll ( " \x08Wire has been randomly selected (%s%s \x08)", code[wire], color[wire] );
+        PrintToConsoleAll ( " \x08Wire has been randomly selected (%s%s \x08)", code[wire], color[wire] );
     }
     return Plugin_Continue;
 }
@@ -84,20 +83,18 @@ public Action Event_BombBeginDefuse ( Handle event, const char[] name, bool dont
 }
  
 /* PANELS */
-public Panel_Plant ( Handle menu, MenuAction action, int player, int item ) {
+public Panel_Plant ( Handle menu, MenuAction action, int player, int wire ) {
     char name[64];
-    int choice = ( item - 1 );
+    --wire;
     GetClientName ( player, name, sizeof ( name ) );
-    if ( choice >= 0 && choice <= 3 ) {
-        wire = choice;
+    if ( wire >= 0 && wire <= 3 ) {
         PrintToChat ( player, " \x08You have chosen the %s%s \x08wire", code[wire], color[wire] );
     }
     PrintToChatAll ( "[debug] \x08%s \x08has chosen the %s%s \x08wire", name, code[wire], color[wire] );
 }
-public Panel_Defuse ( Handle menu, MenuAction action, int player, int item ) {
-    int choice = ( item - 1 );
-    if ( choice >= 0 && choice <= 3 ) {
-        cut = choice;
+public Panel_Defuse ( Handle menu, MenuAction action, int player, int cut ) {
+    --cut;
+    if ( cut >= 0 && cut <= 3 ) {
         if ( cut == wire ) {
             PrintToChat ( player, " \x08You have cut the %s%s \x08wire", code[cut], color[cut] );
             if ( hasKit ) {
@@ -114,6 +111,7 @@ public Panel_Defuse ( Handle menu, MenuAction action, int player, int item ) {
         } else {
             PrintToChat ( player, " \x08You have cut the %s%s \x08wire", code[cut], color[cut] );
             PrintToChat ( player, " \x08The %s%s \x08wire was the correct one", code[wire], color[wire] );
+            PrintToConsoleAll ( "RejectDefuse(%d)", player );
             RejectDefuse ( player );
         }
     }
