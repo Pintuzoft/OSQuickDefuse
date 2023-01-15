@@ -173,7 +173,7 @@ public void LoadDefusePanel ( int player ) {
         DrawPanelText ( panel, "Using defuse kit: 1/4 chance" );
     }
     SendPanelToClient ( panel, player, Panel_Defuse, 5 );
-    //CloseHandle ( panel );
+    CloseHandle ( panel );
 } 
 
 public void LoadPlantPanel ( int player ) {
@@ -189,7 +189,7 @@ public void LoadPlantPanel ( int player ) {
     DrawPanelText ( panel, " " );
     DrawPanelText ( panel, "Exit" );
     SendPanelToClient ( panel, player, Panel_Plant, 5 );
-    //CloseHandle ( panel );
+    CloseHandle ( panel );
 } 
 
 public void ResetPanel ( ) {
