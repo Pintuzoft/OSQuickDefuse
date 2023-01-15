@@ -26,30 +26,14 @@ public void OnPluginStart() {
     HookEvent ( "bomb_begindefuse", Event_BombBeginDefuse, EventHookMode_Post );
 }
 
-public void OnButtonPress ( int client, int button ) {
-    PrintToConsoleAll ( "[debug:OnButtonPress]" );
-    PrintToConsoleAll ( "key: %d", button );
-}
-
 /* EVENTS */
 public Action Event_BombBeginPlant ( Handle event, const char[] name, bool dontBroadcast ) {
     int player = GetClientOfUserId ( GetEventInt ( event, "userid" ) );
     wire = 0;
     cut = 0;
     if ( playerIsReal ( player ) ) {
-        Handle panel = CreatePanel ( );
-        SetPanelTitle ( panel, "Choose wire:" );
-        DrawPanelText ( panel, " " );
-        DrawPanelText ( panel, "Set a wire for instant defuse:" );
-        DrawPanelText ( panel, " " );
-        DrawPanelItem ( panel, "Blue" );
-        DrawPanelItem ( panel, "Yellow" );
-        DrawPanelItem ( panel, "Red" );
-        DrawPanelItem ( panel, "Green" );
-        DrawPanelText ( panel, " " );
-        DrawPanelText ( panel, "Exit" );
-        SendPanelToClient ( panel, player, Panel_Plant, 5 );
-        CloseHandle ( panel );
+        LoadPlantPanel ( player );
+
     } else {
         PrintToConsoleAll ( "[debug] \x08Player is not real" );
     }
@@ -67,23 +51,9 @@ public Action Event_BombBeginDefuse ( Handle event, const char[] name, bool dont
     int player = GetClientOfUserId ( GetEventInt ( event, "userid" ) );
     hasKit = GetEventBool ( event, "haskit" );
     if ( playerIsReal ( player ) ) { 
-        Handle panel = CreatePanel ( );
-        SetPanelTitle ( panel, "Choose wire:" );
-        DrawPanelText ( panel, " " );
-        DrawPanelText ( panel, "Cut a wire for an instant defuse" );
-        DrawPanelText ( panel, " " );
-        DrawPanelItem ( panel, "Blue" );
-        DrawPanelItem ( panel, "Yellow" );
-        DrawPanelItem ( panel, "Red" );
-        DrawPanelItem ( panel, "Green" );
-        DrawPanelText ( panel, " " );
-        if ( ! hasKit ) {
-            DrawPanelText ( panel, "WARNING!: You don't have a defuse kit: 1/8 chance" );
-        } else {
-            DrawPanelText ( panel, "Using defuse kit: 1/4 chance" );
-        }
-        SendPanelToClient ( panel, player, Panel_Defuse, 5 );
-        CloseHandle ( panel );
+        LoadDefusePanel ( player );
+    } else {
+        /* NOT REAL PLAYER */
     }
     return Plugin_Continue;
 }
@@ -100,10 +70,6 @@ public Action Event_BombBeginDefuse ( Handle event, const char[] name, bool dont
 }
 
 public Panel_Defuse ( Handle menu, MenuAction action, int player, int cut ) {
-    /* DONT HANDLE CUT HERE */
-}
-
-public Panel_Defuse_old ( Handle menu, MenuAction action, int player, int cut ) {
     --cut;
     if ( wire <= 0 || wire >= 5 ) {
         wire = GetRandomInt ( 1, 4 );
@@ -120,15 +86,17 @@ public Panel_Defuse_old ( Handle menu, MenuAction action, int player, int cut ) 
                     AcceptDefuse ( player );
                 } else {
                     PrintToChat ( player, " \x08The %s%s \x08wire was the correct one", code[wire], color[wire] );
-                    RejectDefuse ( player );
+                    //RejectDefuse ( player );
                 }
             }
         } else {
             PrintToChat ( player, " \x08You have cut the %s%s \x08wire", code[cut], color[cut] );
             PrintToChat ( player, " \x08The %s%s \x08wire was the correct one", code[wire], color[wire] );
             PrintToConsoleAll ( "RejectDefuse(%d)", player );
-            RejectDefuse ( player );
+            //RejectDefuse ( player );
         }
+    } else { 
+        LoadDefusePanel ( player );
     }
 }
 
@@ -169,7 +137,43 @@ public void RejectDefuse ( int player ) {
     }
     ResetVariables ( );
 }
- 
+
+public void LoadDefusePanel ( int player ) {
+    Handle panel = CreatePanel ( );
+    SetPanelTitle ( panel, "Choose wire:" );
+    DrawPanelText ( panel, " " );
+    DrawPanelText ( panel, "Cut a wire for an instant defuse" );
+    DrawPanelText ( panel, " " );
+    DrawPanelItem ( panel, "Blue" );
+    DrawPanelItem ( panel, "Yellow" );
+    DrawPanelItem ( panel, "Red" );
+    DrawPanelItem ( panel, "Green" );
+    DrawPanelText ( panel, " " );
+    if ( ! hasKit ) {
+        DrawPanelText ( panel, "WARNING!: You don't have a defuse kit: 1/8 chance" );
+    } else {
+        DrawPanelText ( panel, "Using defuse kit: 1/4 chance" );
+    }
+    SendPanelToClient ( panel, player, Panel_Defuse, 5 );
+    CloseHandle ( panel );
+} 
+
+public void LoadPlantPanel ( int player ) {
+    Handle panel = CreatePanel ( );
+    SetPanelTitle ( panel, "Choose wire:" );
+    DrawPanelText ( panel, " " );
+    DrawPanelText ( panel, "Set a wire for instant defuse:" );
+    DrawPanelText ( panel, " " );
+    DrawPanelItem ( panel, "Blue" );
+    DrawPanelItem ( panel, "Yellow" );
+    DrawPanelItem ( panel, "Red" );
+    DrawPanelItem ( panel, "Green" );
+    DrawPanelText ( panel, " " );
+    DrawPanelText ( panel, "Exit" );
+    SendPanelToClient ( panel, player, Panel_Plant, 5 );
+    CloseHandle ( panel );
+} 
+
 public void ResetVariables ( ) {
     wire = 0;
     cut = 0;
