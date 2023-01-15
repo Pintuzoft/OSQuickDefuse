@@ -5,7 +5,7 @@
 
 int wire;
 bool hasKit = false;
-Handle panel; 
+Handle panel = null; 
 
 char code[4][8] = { "\x0C", "\x10", "\x02", "\x04" };
 char color[4][8] = { "Blue", "Yellow", "Red", "Green" };
