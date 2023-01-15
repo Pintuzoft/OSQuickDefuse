@@ -6,6 +6,8 @@
 int wire;
 int cut;
 bool hasKit = false;
+int defuser;
+bool detectKeys = false;
 char code[4][8] = { "\x0C", "\x10", "\x02", "\x04" };
 char color[4][8] = { "Blue", "Yellow", "Red", "Green" };
 
@@ -23,6 +25,14 @@ public void OnPluginStart() {
     HookEvent ( "bomb_planted", Event_BombPlanted, EventHookMode_Post );
     HookEvent ( "bomb_begindefuse", Event_BombBeginDefuse, EventHookMode_Post );
 }
+
+public void OnButtonPress ( int client, int button ) {
+    
+    PrintToConsoleAll ( "key: %d", button );
+
+
+}
+
 
 
 /* EVENTS */
@@ -48,9 +58,9 @@ public Action Event_BombBeginPlant ( Handle event, const char[] name, bool dontB
     return Plugin_Continue;
 }
 public Action Event_BombPlanted ( Handle event, const char[] name, bool dontBroadcast ) {
-    if ( wire == 0 ) {
+    if ( wire <= 0 || wire >= 5 ) {
         wire = GetRandomInt ( 1, 4 );
-        PrintToConsoleAll ( " \x08Wire has been randomly selected (%s%s \x08)", code[wire], color[wire] );
+        PrintToConsoleAll ( " \x08Wire has been randomly selected", code[wire], color[wire] );
     }
     return Plugin_Continue;
 }
@@ -58,6 +68,8 @@ public Action Event_BombPlanted ( Handle event, const char[] name, bool dontBroa
 public Action Event_BombBeginDefuse ( Handle event, const char[] name, bool dontBroadcast ) {
     int player = GetClientOfUserId ( GetEventInt ( event, "userid" ) );
     hasKit = GetEventBool ( event, "haskit" );
+    defuser = player;
+    detectKeys = true;
 
     Handle panel = CreatePanel ( );
 
@@ -83,7 +95,7 @@ public Action Event_BombBeginDefuse ( Handle event, const char[] name, bool dont
 }
  
 /* PANELS */
-public Panel_Plant ( Handle menu, MenuAction action, int player, int wire ) {
+ public Panel_Plant ( Handle menu, MenuAction action, int player, int wire ) {
     char name[64];
     --wire;
     GetClientName ( player, name, sizeof ( name ) );
@@ -92,7 +104,12 @@ public Panel_Plant ( Handle menu, MenuAction action, int player, int wire ) {
     }
     PrintToChatAll ( "[debug] \x08%s \x08has chosen the %s%s \x08wire", name, code[wire], color[wire] );
 }
+
 public Panel_Defuse ( Handle menu, MenuAction action, int player, int cut ) {
+    /* DONT HANDLE CUT HERE */
+}
+
+public Panel_Defuse_old ( Handle menu, MenuAction action, int player, int cut ) {
     --cut;
     if ( wire <= 0 || wire >= 5 ) {
         wire = GetRandomInt ( 1, 4 );
