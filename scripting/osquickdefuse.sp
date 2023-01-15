@@ -51,7 +51,9 @@ public Action Event_BombBeginPlant ( Handle event, const char[] name, bool dontB
     int player = GetClientOfUserId ( GetEventInt ( event, "userid" ) );
     wire = -1;
     hasKit = false;
-    ResetPanel ( );
+    if ( panel ) {
+        ResetPanel ( );
+    }
     if ( playerIsReal ( player ) ) {
         LoadPlantPanel ( player );
     } 
