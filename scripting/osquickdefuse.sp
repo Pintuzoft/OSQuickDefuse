@@ -27,10 +27,8 @@ public void OnPluginStart() {
 }
 
 public void OnButtonPress ( int client, int button ) {
-    
+    PrintToConsoleAll ( "[debug:OnButtonPress]" );
     PrintToConsoleAll ( "key: %d", button );
-
-
 }
 
 
