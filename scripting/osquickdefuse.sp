@@ -58,7 +58,7 @@ public Action Event_BombBeginPlant ( Handle event, const char[] name, bool dontB
     return Plugin_Continue;
 }
 public Action Event_BombPlanted ( Handle event, const char[] name, bool dontBroadcast ) {
-    if ( wire < 0 || wire >3 ) {
+    if ( wire < 0 || wire > 3 ) {
         wire = GetRandomInt ( 0, 3 );
         PrintToConsoleAll ( " \x08Wire has been randomly selected", code[wire], color[wire] );
     }
@@ -70,6 +70,8 @@ public Action Event_BombBeginDefuse ( Handle event, const char[] name, bool dont
     hasKit = GetEventBool ( event, "haskit" );
     if ( playerIsReal ( player ) ) { 
         LoadDefusePanel ( player );
+    } else {
+        wire = GetRandomInt ( 0, 3 );
     }
     return Plugin_Continue;
 }
