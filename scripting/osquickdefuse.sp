@@ -196,6 +196,7 @@ public void ResetPanel ( ) {
     if ( panel != null ) {
         delete panel;
     }
+    panel = null;
 }
 
 public bool playerIsReal ( int player ) {
