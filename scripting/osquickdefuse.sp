@@ -132,7 +132,9 @@ public void AcceptDefuse ( int player ) {
             PrintToChatAll ( " \x08%s \x08has correctly cut the %s%s \x08defuse wire (1/8 chance)", name, code[wire], color[wire] );
         }
     }
-    ResetPanel ( );
+    if ( playerIsReal ( player ) ) {
+        ResetPanel ( );     
+    }
 }
 
 public void RejectDefuse ( int player ) {
@@ -149,7 +151,9 @@ public void RejectDefuse ( int player ) {
             PrintToChatAll ( " \x08%s \x08has failed to cut the correct wire without kit (1/8)", name );
         }
     }
-    ResetPanel ( );
+    if ( playerIsReal ( player ) ) {
+        ResetPanel ( );     
+    }
 }
 
 public void LoadDefusePanel ( int player ) {
@@ -189,7 +193,7 @@ public void LoadPlantPanel ( int player ) {
 } 
 
 public void ResetPanel ( ) {
-    if ( panel ) {
+    if ( panel != null ) {
         delete panel;
     }
 }
