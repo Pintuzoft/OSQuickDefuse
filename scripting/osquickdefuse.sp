@@ -109,6 +109,7 @@ public Panel_Defuse ( Handle menu, MenuAction action, int player, int choice ) {
 public void AcceptDefuse ( int player ) {
     char name[64];
     int bomb = FindEntityByClassname ( -1, "planted_c4" );
+    printVariables ( player );
     if ( bomb ) {
         GetClientName ( player, name, sizeof ( name ) );
         SetEntPropFloat ( bomb, Prop_Send, "m_flDefuseCountDown", 1.0 );
@@ -126,6 +127,7 @@ public void AcceptDefuse ( int player ) {
 public void RejectDefuse ( int player ) {
     char name[64];
     int bomb = FindEntityByClassname ( -1, "planted_c4" );
+    printVariables ( player );
     if ( bomb ) {
         GetClientName ( player, name, sizeof ( name ) );
         SetEntPropFloat ( bomb, Prop_Send, "m_flC4Blow", 1.0 );
@@ -136,13 +138,13 @@ public void RejectDefuse ( int player ) {
             PrintToChat ( player, " \x08You have accidentally triggered the bomb while trying to defused it without kit (1/8 chance)" );
             PrintToChatAll ( " \x08%s \x08has failed to cut the correct wire without kit (1/8)", name );
         }
-    } else {
-        PrintToChat ( player, " \x08The bomb wasnt found!" );
+        printVariables ( player );
     }
     ResetPanel ( );
 }
 
 public void LoadDefusePanel ( int player ) {
+    ResetPanel ( );
     panel = CreatePanel ( );
     SetPanelTitle ( panel, "Choose wire:" );
     DrawPanelText ( panel, " " );
@@ -163,6 +165,7 @@ public void LoadDefusePanel ( int player ) {
 } 
 
 public void LoadPlantPanel ( int player ) {
+    ResetPanel ( );
     panel = CreatePanel ( );
     SetPanelTitle ( panel, "Choose wire:" );
     DrawPanelText ( panel, " " );
@@ -194,4 +197,9 @@ public bool playerIsReal ( int player ) {
         return true;
     }
     return false;
+}
+
+public void printVariables ( int player ) {
+    PrintToChat ( player, " \x08[debug]: hasKit: %d", hasKit );
+    PrintToChat ( player, " \x08[debug]: wire: %d", wire );
 }
